@@ -1,0 +1,26 @@
+@import '~scss-mixin-leobonhart/mixins.scss';
+
+.main{
+  display: flex;
+  flex-direction: column;
+  width: 100vw;
+  height: 100vh;
+  .control{
+    display: flex;
+    padding: 25px;
+    .form-group{
+      margin-right: 10px;
+      label{
+        font-size: 18px;
+        margin-right: 5px;
+      }
+      input{
+      }
+    }
+    button{
+      margin-right: 10px;
+      height: 40px;
+    }
+  }
+}
+

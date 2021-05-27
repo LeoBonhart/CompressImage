@@ -3,8 +3,8 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
-    "build": "ng build",
+    "start": "ng serve -o",
+    "build": "ng build --prod",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"
@@ -12,15 +12,20 @@
   "private": true,
   "dependencies": {
     "@angular/animations": "~11.2.6",
+    "@angular/cdk": "^11.2.11",
     "@angular/common": "~11.2.6",
     "@angular/compiler": "~11.2.6",
     "@angular/core": "~11.2.6",
     "@angular/forms": "~11.2.6",
+    "@angular/material": "^11.2.11",
     "@angular/platform-browser": "~11.2.6",
     "@angular/platform-browser-dynamic": "~11.2.6",
     "@angular/router": "~11.2.6",
+    "ngx-image-compress": "^11.0.3",
     "rxjs": "~6.6.0",
+    "scss-mixin-leobonhart": "^1.1.4",
     "tslib": "^2.0.0",
+    "web-animations-js": "^2.3.2",
     "zone.js": "~0.11.3"
   },
   "devDependencies": {

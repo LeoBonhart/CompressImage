@@ -1,0 +1,10 @@
+
+<div class="files-container" appDrag [mime]="mime" (filesDropped)="onFilesDropped($event)" (typeError)="onTypeError($event)">
+  <div class="upload-file" *ngFor="let item of uploadFiles; index as i" appClickStopPropagation>
+    <img [src]="item.base64" alt=""/>
+    <button mat-icon-button class="delete" (click)="onDeleteImage(i)" appClickStopPropagation>
+      <mat-icon>delete</mat-icon>
+    </button>
+  </div>
+</div>
+

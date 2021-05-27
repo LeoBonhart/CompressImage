@@ -1,0 +1,58 @@
+@import '~scss-mixin-leobonhart/mixins.scss';
+
+:host{
+  display: flex;
+  height: 100%;
+  width: 100%;
+}
+
+.files-container{
+  $wh: 200px;
+  display: grid;
+  grid-template-rows: repeat(auto-fill, minmax($wh, 1fr));;
+  grid-template-columns: repeat(auto-fill, minmax($wh, 1fr));;
+  grid-gap: 25px;
+  padding: 25px;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  box-shadow: 0 0 5px rgba(0,0,0,0.5) inset;
+  cursor: pointer;
+  color: GetMaterialColor('grey', 700);
+  border-width: 3px;
+  border-style: dashed;
+  border-color: GetMaterialColor('grey', 500);
+  .upload-file{
+    z-index: 10;
+    position: relative;
+
+    img{
+      object-fit: contain;
+      max-width: 100%;
+      max-height: 100%;
+      margin: auto;
+      width: 100%;
+      box-shadow: 0 0 5px rgba(0,0,0,0.5);
+    }
+    .delete{
+      position: absolute;
+      right: 0;
+      top: 0;
+      @include transition(color);
+
+      &:hover{
+        color: GetMaterialColor('red')
+      }
+    }
+  }
+
+  &:hover{
+    background-color: GetMaterialColor('grey', 50);
+  }
+  &.fileover{
+    border-color: GetMaterialColor('green', 500);
+    background-color: GetMaterialColor('green', 50);
+  }
+}
+
+
