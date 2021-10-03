@@ -18,16 +18,5 @@
 
 
 
-  <div style="visibility: hidden; overflow: hidden; height: 0;">
-    <img
-      #imgbefore
-      *ngIf="imgResultBeforeCompress"
-      [src]="imgResultBeforeCompress"
-      alt=""
-    />
-    <img
-      *ngIf="imgResultAfterCompress"
-      [src]="imgResultAfterCompress"
-      alt=""
-    />
+  <div style="visibility: hidden; overflow: hidden; height: 0;" #imgbeforecontainer>
   </div>

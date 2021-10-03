@@ -1,42 +1,43 @@
-import { Component, ViewChild, ElementRef } from '@angular/core';
+import { Component, ViewChild, ElementRef, OnInit, AfterViewInit, Renderer2 } from '@angular/core';
 import { NgxImageCompressService } from 'ngx-image-compress';
+import { Observable, from } from 'rxjs';
+import { mergeMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent {
+export class AppComponent implements OnInit, AfterViewInit{
   title = 'CompressImage';
 
   width: number = 500;
 
   percent: number = 50;
 
-  @ViewChild("imgbefore", { static: false })  imgBefore!: ElementRef<HTMLImageElement>;
+  @ViewChild("imgbeforecontainer", { static: false })  imgbeforecontainer!: ElementRef<HTMLDivElement>;
 
   files?: Array<File>;
 
-  imgResultBeforeCompress!: string;
+  constructor(private imageCompress: NgxImageCompressService, private r2: Renderer2) {
+  }
+  ngAfterViewInit(): void {
+  }
 
-  imgResultAfterCompress!: string;
-
-
-  constructor(private imageCompress: NgxImageCompressService) {
+  ngOnInit(): void {
   }
 
   compressFile() {
     this.getFiles(file => {
       const name: string = file.name.toLowerCase();
       this.imageCompress.getOrientation(file).then(orientation => {
-        this.previewFile(file, image => {
-          this.imgResultBeforeCompress = image;
-          this.consoleSize(image, 'было');
-
-          setTimeout(() => {
+        this.previewFile(file).then(image => {
+          // this.consoleSize(result, 'было');
+          const img = this.r2.createElement('img' as keyof HTMLElementTagNameMap) as HTMLImageElement;
+          this.r2.appendChild(this.imgbeforecontainer.nativeElement, img);
+          this.r2.listen(img, 'load' as keyof DocumentEventMap, (e: Event) => {
             let ratio = 100;
-            const width = this.imgBefore.nativeElement.clientWidth;
-            console.log(this.imgBefore);
+            const width = img.width;
             if (width > this.width) {
               const percent = (this.width / width) * 100;
               ratio = percent;
@@ -44,24 +45,29 @@ export class AppComponent {
             this.imageCompress
               .compressFile(image, orientation, ratio, this.percent)
               .then(result => {
-                this.imgResultAfterCompress = result;
-                this.consoleSize(result, 'стало');
+                // this.consoleSize(result, 'стало');
                 fetch(result)
                   .then(res => res.blob())
-                  .then(x => this.LocalDownloadFile(x, name));
+                  .then(x => {
+                    this.LocalDownloadFile(x, name);
+                    img.remove();
+                  });
               });
-          }, 0);
+          });
+          this.r2.setAttribute(img, 'src', image);
         });
       });
     })
   }
 
-  previewFile(file: File, callback: (base64: string) => void) {
-    const reader = new FileReader();
-    reader.addEventListener('load', function () {
-      callback(reader.result as string);
-    }, false);
-    reader.readAsDataURL(file);
+  previewFile(file: File) {
+    return new Promise<string>((resolve, reject) => {
+      const reader = new FileReader();
+      reader.addEventListener('load', function () {
+        resolve(reader.result as string);
+      }, false);
+      reader.readAsDataURL(file);
+    });
   }
 
   consoleSize(image: string, txt: string) {
@@ -88,15 +94,15 @@ export class AppComponent {
     if (window.navigator.msSaveOrOpenBlob) {
       window.navigator.msSaveOrOpenBlob(file, filename);
     } else {
-      let a = document.createElement('a');
+      const a = this.r2.createElement('a' as keyof HTMLElementTagNameMap) as HTMLAnchorElement ;
       let url = URL.createObjectURL(file);
-      a.href = url;
-      a.download = filename;
-      document.body.appendChild(a);
+      this.r2.setAttribute(a, 'href', url);
+      this.r2.setAttribute(a, 'download', filename);
+      this.r2.appendChild(this.imgbeforecontainer.nativeElement, a);
       a.click();
       setTimeout(function() {
-          document.body.removeChild(a);
-          window.URL.revokeObjectURL(url);
+        a.remove();
+        window.URL.revokeObjectURL(url);
       }, 0);
     }
   }
